@@ -158,7 +158,7 @@ function M.generate(instruction, opts)
     return false
   end
   if type(instruction) ~= "string" or instruction:match("^%s*$") then
-    notify("Type your instruction after :bp, for example :bp create a constructor.", vim.log.levels.WARN)
+    notify("Type your instruction after :BP, for example :BP create a constructor.", vim.log.levels.WARN)
     return false
   end
   local provider = M.get_provider()

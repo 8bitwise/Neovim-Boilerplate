@@ -33,21 +33,20 @@ README.md and doc/providers.md for provider setup and authentication.
 
 COMMANDS                                          *boilerplate-commands*
 
-:bp [instruction]                                 *:bp* *:Boilerplate*
+:BP [instruction]                                 *:BP*
     Generate code below the cursor. Type the instruction beside the command:
-        :bp create a constructor with validation
-    With no instruction, reopen the command line with :bp ready to complete.
+        :BP create a constructor with validation
+    With no instruction, reopen the command line with :BP ready to complete.
     Fill an empty buffer without a leading blank line.
     The preview opens when the AI starts writing and fills in live. It is
     read-only until generation finishes; q cancels while it streams.
 
-:[range]bp [instruction]
+:[range]BP [instruction]
     Replace the complete selected lines. An omitted instruction reopens the
     command line with the range preserved. Visual selections are linewise.
 
-    Typed bp is translated to Boilerplate on Enter because Neovim requires
-    uppercase user-command names. Scripts and <Cmd> mappings should use
-    Boilerplate directly. Use bprevious for the previous-buffer action.
+    BP is a native user command, including in scripts and <Cmd> mappings.
+    Lowercase :bp retains Neovim's built-in previous-buffer action.
 
 :BoilerplateAccept                                 *:BoilerplateAccept*
     Apply the editable preview. Also bound to Enter in normal mode in the
