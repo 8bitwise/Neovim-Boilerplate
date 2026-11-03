@@ -1,5 +1,5 @@
--- Installed by boilerplate.nvim/install.sh. Edit this file to choose your AI.
--- Claude uses your existing CLI login. See doc/providers.md for other providers.
+-- Installed by boilerplate.nvim/install.sh. No AI is selected by default.
+-- Choose a provider or command below. See doc/providers.md in the checkout.
 require("boilerplate").setup({
-  provider = require("boilerplate.providers").claude(),
+  -- Add your provider or command here before using :BP.
 })

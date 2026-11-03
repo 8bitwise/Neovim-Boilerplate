@@ -10,9 +10,10 @@ For another config: ./install.sh ~/.config/nvim-work
 XDG_CONFIG_HOME and NVIM_APPNAME are also respected.
 
 This links the checkout into pack/boilerplate/start/boilerplate.nvim and creates
-plugin/boilerplate-local.lua only if missing. The starter config uses Claude
-Code, which must be installed, on PATH, and authenticated separately. Edit that
-file to choose another provider. Existing settings and init.lua are preserved.
+plugin/boilerplate-local.lua only if missing. No AI is selected in the starter
+config. Edit that file to choose a provider or command; see doc/providers.md
+for instructions. Existing settings and init.lua are preserved. Until an AI
+is configured, :BP reports that setup is required and starts no request.
 Keep only one setup() call if you already configure Boilerplate elsewhere.
 Keep the checkout in place; updates are available after restarting Neovim.
 Remove the package symlink and setup file to uninstall.

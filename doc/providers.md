@@ -8,6 +8,36 @@ chatbots; services with a different protocol need a custom adapter or wrapper.
 Set **either** `command` or `provider` in `require("boilerplate").setup()`.
 Existing `command = { ... }` configurations continue to work unchanged.
 
+## Choose an agent after installation
+
+The installer leaves the starter config unconfigured. Open
+`~/.config/nvim/plugin/boilerplate-local.lua` (or the same file under your chosen
+Neovim config directory) and replace its `setup()` block with the following.
+Uncomment **exactly one** provider line to select your agent:
+
+```lua
+local providers = require("boilerplate.providers")
+require("boilerplate").setup({
+  -- provider = providers.claude(),
+  -- provider = providers.codex(),
+  -- provider = providers.opencode(),
+})
+```
+
+Install and authenticate the selected agent's CLI separately, and make sure
+its executable is on your `PATH`. These presets use the CLI's model selection
+unless you pass a model explicitly, such as
+`providers.claude({ model = "your-model-id" })`. If the executable is elsewhere,
+pass `executable = vim.fn.expand("~/path/to/your-cli")` in the same options table.
+
+Save the config and restart Neovim. Run `:checkhealth boilerplate`, then
+`:BP create a helper function`. The health check checks setup without sending
+an AI request. Typing suggestions use the same provider.
+
+For another CLI or a direct API connection, use the examples below instead.
+To switch agents later, replace the provider line and restart Neovim. Rerunning
+the installer preserves your existing configuration.
+
 ## CLI providers
 
 For a command that reads stdin and prints an answer, no adapter is necessary:

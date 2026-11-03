@@ -9,7 +9,7 @@ fi
 if [ "${1-}" = "--help" ] || [ "${1-}" = "-h" ]; then
   echo "Usage: $0 [neovim-config-directory]"
   echo "Defaults to XDG_CONFIG_HOME/NVIM_APPNAME (usually ~/.config/nvim)."
-  echo "Installs a symlink and a Claude config if none exists. No downloads."
+  echo "Installs a symlink and an unconfigured starter config if none exists. No downloads."
   exit 0
 fi
 
@@ -35,9 +35,10 @@ if [ -e "$settings" ] || [ -L "$settings" ]; then
 else
   mkdir -p "$config_dir/plugin"
   cp "$source_dir/examples/boilerplate-local.lua" "$settings"
-  printf 'Created Claude config: %s\n' "$settings"
+  printf 'Created starter config (no AI selected): %s\n' "$settings"
 fi
 
 printf 'Installed: %s -> %s\n' "$destination" "$source_dir"
+printf 'Choose your AI in: %s\n' "$settings"
+printf 'Setup instructions: %s/doc/providers.md\n' "$source_dir"
 printf '%s\n' 'Restart Neovim, then run :checkhealth boilerplate.'
-printf '%s\n' 'Claude must be installed, on PATH, and authenticated separately.'
