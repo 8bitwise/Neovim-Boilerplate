@@ -1,0 +1,112 @@
+*boilerplate.txt*  AI boilerplate code generation       *boilerplate*
+
+Requires Neovim 0.9+. Choose a noninteractive AI command, an HTTP provider
+(curl 7.76+), or a custom adapter. No default provider or model is selected.
+
+SETUP                                             *boilerplate-setup*
+
+From the checkout, run ./install.sh in a terminal, then restart Neovim.
+For another config: ./install.sh ~/.config/nvim-work
+XDG_CONFIG_HOME and NVIM_APPNAME are also respected.
+
+This links the checkout into pack/boilerplate/start/boilerplate.nvim and creates
+plugin/boilerplate-local.lua only if missing. The starter config uses Claude
+Code, which must be installed, on PATH, and authenticated separately. Edit that
+file to choose another provider. Existing settings and init.lua are preserved.
+Keep only one setup() call if you already configure Boilerplate elsewhere.
+Keep the checkout in place; updates are available after restarting Neovim.
+Remove the package symlink and setup file to uninstall.
+
+Example configuration:
+>
+    require("boilerplate").setup({
+      command = { "ollama", "run", "your-installed-model" },
+      timeout_ms = 120000,
+      context_lines = 80,
+      max_prompt_bytes = 100000,
+      max_output_bytes = 100000,
+      suggest_delay_ms = 1000,
+    })
+<
+Existing CLI and HTTP provider configurations remain supported. See
+README.md and doc/providers.md for provider setup and authentication.
+
+COMMANDS                                          *boilerplate-commands*
+
+:bp [instruction]                                 *:bp* *:Boilerplate*
+    Generate code below the cursor. Type the instruction beside the command:
+        :bp create a constructor with validation
+    With no instruction, reopen the command line with :bp ready to complete.
+    Fill an empty buffer without a leading blank line.
+    The preview opens when the AI starts writing and fills in live. It is
+    read-only until generation finishes; q cancels while it streams.
+
+:[range]bp [instruction]
+    Replace the complete selected lines. An omitted instruction reopens the
+    command line with the range preserved. Visual selections are linewise.
+
+    Typed bp is translated to Boilerplate on Enter because Neovim requires
+    uppercase user-command names. Scripts and <Cmd> mappings should use
+    Boilerplate directly. Use bprevious for the previous-buffer action.
+
+:BoilerplateAccept                                 *:BoilerplateAccept*
+    Apply the editable preview. Also bound to Enter in normal mode in the
+    preview. Acceptance is blocked if the source buffer changed. Use u in
+    the source buffer to undo the accepted suggestion.
+
+:BoilerplateReject                                 *:BoilerplateReject*
+    Discard the preview or pending request. Also bound to q in the preview.
+
+:BoilerplateCancel                                 *:BoilerplateCancel*
+    Cancel generation or discard the preview. Late process results are ignored.
+
+:bps [on|off]                            *:bps* *:BoilerplateSuggest*
+    Toggle suggestions while typing. When on, a pause of suggest_delay_ms
+    in Insert mode at the end of a line requests a completion of the line
+    or the next few lines, shown as ghost text. <Tab> accepts it; typing or
+    moving dismisses it. <Tab> is unchanged when nothing is suggested. Each
+    pause is one request to your provider.
+
+CONTEXT                                           *boilerplate-context*
+
+The prompt contains the instruction, full file path, filetype, indentation,
+selected lines, and up to context_lines before and after the target. Unsaved
+edits are included. Set context_lines=0 to omit surrounding lines. No repository
+scan is performed. Your provider determines where the prompt is processed.
+
+PROVIDERS                                         *boilerplate-providers*
+>
+    local providers = require("boilerplate.providers")
+    require("boilerplate").setup({
+      provider = providers.openai({ model = "your-model-id" }),
+    })
+<
+Choose either provider or command. Built-in factories: cli, claude (Claude Code
+CLI, streamed; accepts executable, model, effort, args), codex and opencode
+(read-only agent presets; executable, model, args), openai (Responses),
+openai_compatible (Chat Completions), anthropic, gemini, and ollama.
+API factories accept model, base_url, endpoint, api_key_env, headers, params,
+and curl. Keys are read from the named environment variable at request time.
+
+Custom providers implement build(input, env), returning {command=argv, stdin=...},
+and optionally parse(stdout) and stream(line). See doc/providers.md for the full contract.
+
+LUA                                               *boilerplate-api*
+>
+    local bp = require("boilerplate")
+    bp.generate("create a constructor")
+    bp.generate("implement stubs", { line1 = 5, line2 = 12 })
+    bp.accept()
+    bp.reject()
+    bp.cancel()
+    bp.status()
+<
+Ranges are inclusive and one-based. generate() requires an instruction and
+returns true when the process starts. accept() returns true on success or false
+if there is no preview, the source changed, or the source cannot be modified.
+status() returns idle, running, or preview. Only one request/preview is active.
+
+:checkhealth boilerplate checks the version, executable, and API key variable
+presence without calling AI or revealing keys.
+
+vim:tw=78:ts=8:ft=help:norl:
